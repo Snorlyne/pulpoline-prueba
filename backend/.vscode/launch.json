@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug NestJS in Docker",
+            "type": "node",
+            "request": "attach",
+            "port": 9229,
+            "address": "0.0.0.0",
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/app", // Asegúrate de que coincide con tu WORKDIR en Dockerfile
+            "restart": true,
+            "sourceMaps": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        }
+    ]
+}
