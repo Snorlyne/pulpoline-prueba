@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { IWeather } from "../interfaces/weather.interface";
 import { useAuth } from "../hooks/auth.hook";
 
@@ -12,6 +12,7 @@ interface TableProps {
   favoritesData?: string[];
 }
 export default function Table({ data, favoritesData }: TableProps) {
+  const [WeatherData, setWeatherData] = useState<IWeather[]>(data);
   const [favorites, setFavorites] = useState<string[]>(favoritesData || []);
   const [loading, setLoading] = useState(false);
   const [selectedData, setSelectedData] = useState<IWeather>();
@@ -30,6 +31,9 @@ export default function Table({ data, favoritesData }: TableProps) {
         if (favorites.includes(city)) {
           await removeFavorite(city, user);
           setFavorites((prev) => prev.filter((item) => item !== city));
+          if (favoritesData && favoritesData.includes(city)) {
+            setWeatherData((prev) => prev.filter((item) => item.location.name !== city));
+          }
           showToastAlert("City removed from favorites", "success");
         } else {
           await addFavorite(city, user);
@@ -44,6 +48,12 @@ export default function Table({ data, favoritesData }: TableProps) {
       }
     }
   };
+
+  useEffect(() => {
+    if (data.length > 0) {
+      setWeatherData(data);
+    }
+  }, [data]);
 
   return (
     <>
@@ -77,9 +87,9 @@ export default function Table({ data, favoritesData }: TableProps) {
               </th>
             </tr>
           </thead>
-          {data.length > 0 ? (
+          {WeatherData.length > 0 ? (
             <tbody>
-              {data.map((item, index) => (
+              {WeatherData.map((item, index) => (
                 <tr
                   key={index}
                   className="bg-white dark:bg-gray-800 dark:border-gray-700 border-b"
