@@ -1,0 +1,74 @@
+services:
+  postgresDB:
+    container_name: postgresDB
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db_weather
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    ports:
+      - '5436:5432'
+    networks:
+      - app-network
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - POSTGRES_HOST=postgresDB
+      - POSTGRES_PORT=5432
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DATABASE=db_weather
+      - POSTGRES_SSL=false
+      - JWT_SECRET=awjdiao9jdsoiajwioa
+      - WEATHER_API_KEY=77cb5131b1d945aa8cf201322251205
+    command: >
+      sh -c "pnpm i  && pnpm run start:debug"
+    depends_on:
+      - postgresDB
+    networks:
+      - app-network
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=pgadmin4
+    ports:
+      - '5050:80'
+    depends_on:
+      - postgresDB
+    networks:
+      - app-network
+
+networks:
+  app-network:
