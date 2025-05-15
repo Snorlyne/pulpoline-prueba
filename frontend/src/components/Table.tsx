@@ -6,6 +6,7 @@ import { addFavorite, removeFavorite } from "../services/favorite.service";
 import ModalDetails from "./ModalDetails";
 import { handleAxiosError } from "../helpers/handleAxiosError";
 import { useToastAlert } from "../hooks/toastAlert.hook";
+import { motion } from "framer-motion";
 
 interface TableProps {
   data: IWeather[];
@@ -50,14 +51,12 @@ export default function Table({ data, favoritesData }: TableProps) {
   };
 
   useEffect(() => {
-    if (data.length > 0) {
-      setWeatherData(data);
-    }
+    setWeatherData(data);
   }, [data]);
 
   return (
     <>
-      <div className="relative shadow-md sm:rounded-lg overflow-x-auto">
+      <div className="relative shadow-md sm:rounded-lg overflow-x-auto" style={{scrollbarWidth: "none"}}>
         <table className="w-full text-gray-500 dark:text-gray-400 text-sm text-left rtl:text-right">
           <thead className="bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-400 text-xs uppercase">
             <tr>
@@ -90,9 +89,12 @@ export default function Table({ data, favoritesData }: TableProps) {
           {WeatherData.length > 0 ? (
             <tbody>
               {WeatherData.map((item, index) => (
-                <tr
+                <motion.tr
                   key={index}
                   className="bg-white dark:bg-gray-800 dark:border-gray-700 border-b"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
                 >
                   <td className="px-6 py-4">
                     <img src={item.current.condition.icon} alt="weather icon" />
@@ -180,7 +182,7 @@ export default function Table({ data, favoritesData }: TableProps) {
                       </div>
                     </div>
                   </td>
-                </tr>
+                </motion.tr>
               ))}
             </tbody>
           ) : (
