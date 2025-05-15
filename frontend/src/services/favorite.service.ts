@@ -1,5 +1,8 @@
+import type { IWeather } from "../interfaces/weather.interface";
 import apiClient from "./apiClient.service";
-export const getFavorites = async () => {};
+export const getFavorites = async (auth: { username: string; token: string }) => {
+  return await apiClient.get<IWeather[]>("/favorites", auth.token, true);
+};
 
 export const addFavorite = async (
   city: string,

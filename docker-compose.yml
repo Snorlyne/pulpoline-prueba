@@ -32,7 +32,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DATABASE=db_weather
       - POSTGRES_SSL=false
-      - JWT_SECRET=no utilizar esta palabra en producción
+      - JWT_SECRET=awjdiao9jdsoiajwioa
       - WEATHER_API_KEY=77cb5131b1d945aa8cf201322251205
     command: >
       sh -c "pnpm i  && pnpm run start:debug"

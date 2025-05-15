@@ -24,7 +24,7 @@ export class FavoritesService {
     try {
       const data: IWeather[] = [];
       const favorites = await this.favoriteRepository.find({
-        where: { user: { id: cuerrentUser.id } },
+        where: { user: { id: cuerrentUser.userId } },
       });
 
       for (const fav of favorites) {
@@ -46,7 +46,7 @@ export class FavoritesService {
     createFavoriteDto: CreateFavoriteDto,
   ): Promise<CustomeResponse<Favorite | null>> {
     try {
-      const user = await this.userService.findOne(currentUser.id);
+      const user = await this.userService.findOne(currentUser.userId);
 
       if (!user) {
         return new CustomeResponse(null, 404, 'User not found.');

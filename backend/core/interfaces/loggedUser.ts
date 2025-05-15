@@ -1,4 +1,4 @@
 export interface ILoggedUser {
-  id: number;
+  userId: number;
   username: string;
 }

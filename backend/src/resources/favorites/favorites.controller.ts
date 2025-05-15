@@ -59,7 +59,7 @@ export class FavoritesController {
   @ApiOkResponse({ description: 'Successfully retrieved favorites.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
   findAll(@Request() req) {
-    const user = req.user.username;
+    const user: ILoggedUser = req.user;
     return this.favoritesService.findAll(user);
   }
 
