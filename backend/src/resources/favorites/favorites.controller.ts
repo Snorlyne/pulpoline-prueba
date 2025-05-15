@@ -26,12 +26,14 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { ILoggedUser } from '../../../core/interfaces/loggedUser';
+import { CacheTTL } from '@nestjs/cache-manager';
 
 @ApiTags('Favorites')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({ description: 'Unauthorized. Token missing or invalid.' })
 @ApiForbiddenResponse({ description: 'Forbidden. You do not have access.' })
 @UseGuards(AuthGuard)
+@CacheTTL(60)
 @Controller('favorites')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
