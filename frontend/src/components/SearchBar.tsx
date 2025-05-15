@@ -7,7 +7,6 @@ import { useToastAlert } from "../hooks/toastAlert.hook";
 import { handleAxiosError } from "../helpers/handleAxiosError";
 import { useAuth } from "../hooks/auth.hook";
 import { getFavorites } from "../services/favorite.service";
-import ModalAuth from "./Auth/ModalAuth";
 
 interface SearchBarProps {
   onSearch: (query: IWeather[]) => void;
