@@ -1,6 +1,7 @@
 import { type JSX, type ReactNode, useState } from "react";
 import { AuthContext } from "../contexts/auth.context";
 import type { AuthContextType } from "../types/auth.type";
+import ModalAuth from "../components/Auth/ModalAuth";
 
 export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const [user, setUserState] = useState<AuthContextType["user"]>(() => {
@@ -23,9 +24,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
 
   const isAuthenticated = !!user?.token;
 
+  // ModalAuth state
+  const [openAuthModal, setOpenAuthModal] = useState(false);
+
   return (
-    <AuthContext.Provider value={{ user, setUser, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        isAuthenticated,
+        openAuthModal: () => setOpenAuthModal(true),
+        closeAuthModal: () => setOpenAuthModal(false),
+      }}
+    >
       {children}
+      <ModalAuth open={openAuthModal} onClose={() => setOpenAuthModal(false)} />
     </AuthContext.Provider>
   );
 };

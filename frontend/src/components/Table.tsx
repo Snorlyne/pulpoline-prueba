@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { IWeather } from "../interfaces/weather.interface";
 import { useAuth } from "../hooks/auth.hook";
-import ModalAuth from "./Auth/ModalAuth";
+
 import { addFavorite, removeFavorite } from "../services/favorite.service";
 import ModalDetails from "./ModalDetails";
 import { handleAxiosError } from "../helpers/handleAxiosError";
@@ -16,15 +16,14 @@ export default function Table({ data, favoritesData }: TableProps) {
   const [loading, setLoading] = useState(false);
   const [selectedData, setSelectedData] = useState<IWeather>();
 
-  const [openAuth, setOpenAuth] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
 
-  const { user } = useAuth();
+  const { user, openAuthModal } = useAuth();
   const { showToastAlert } = useToastAlert();
 
   const handleFavorite = async (city: string) => {
     if (!user) {
-      setOpenAuth(true);
+      openAuthModal();
     } else {
       setLoading(true);
       try {
@@ -185,7 +184,6 @@ export default function Table({ data, favoritesData }: TableProps) {
           )}
         </table>
       </div>
-      <ModalAuth open={openAuth} onClose={() => setOpenAuth(false)} />
       <ModalDetails
         data={selectedData}
         open={openDetails}
