@@ -1,60 +1,77 @@
-Weather App - Docker Multicontainer Setup
-This project includes three main services: a NestJS backend, a Vite + React frontend, a PostgreSQL database, and a pgAdmin GUI for database management. All services are orchestrated using Docker Compose.
+# Weather App - Docker Multicontainer Setup
 
-Included Services
-Service Description Local Port
-PostgreSQL Stores weather-related data. 5436 (internal: 5432)
-Backend NestJS API for handling data and auth. 3000, 9229 (debug)
-Frontend React app consuming the API. 5173
-pgAdmin GUI for managing PostgreSQL. 5050
+Este proyecto incluye tres servicios principales: un backend en NestJS, un frontend en Vite + React, una base de datos PostgreSQL y una interfaz gráfica pgAdmin para la gestión de la base de datos. Todos los servicios son orquestados mediante Docker Compose.
 
-Getting Started
-Make sure you have Docker and Docker Compose installed.
+## Servicios incluidos
 
-Run the following command to start all containers:
+| Servicio   | Descripción                                     | Puerto local         |
+| ---------- | ----------------------------------------------- | -------------------- |
+| PostgreSQL | Almacena datos relacionados con el clima        | 5436 (interno: 5432) |
+| Backend    | API NestJS para manejo de datos y autenticación | 3000, 9229 (debug)   |
+| Frontend   | Aplicación React que consume la API             | 5173                 |
+| pgAdmin    | GUI para gestionar PostgreSQL                   | 5050                 |
 
+## Primeros pasos
+
+Asegúrate de tener instalados Docker y Docker Compose.
+
+Ejecuta el siguiente comando para iniciar todos los contenedores:
+
+```bash
 docker-compose up --build
+```
 
-Accessing the Services
-Service Local URL
-Frontend http://localhost:5173
-Backend API http://localhost:3000
-pgAdmin http://localhost:5050
+## Acceso a los servicios
 
-pgAdmin Credentials:
-Email: admin@admin.com
+| Servicio    | URL local             |
+| ----------- | --------------------- |
+| Frontend    | http://localhost:5173 |
+| Backend API | http://localhost:3000 |
+| pgAdmin     | http://localhost:5050 |
 
-Password: pgadmin4
+### Credenciales de pgAdmin:
 
-Once logged in, add a new server with:
+- **Email**: admin@admin.com
+- **Password**: pgadmin4
 
-Host: postgresDB
+Una vez iniciada la sesión, añade un nuevo servidor con:
 
-User: postgres
+- **Host**: postgresDB
+- **Usuario**: postgres
+- **Contraseña**: postgres
+- **Base de datos**: db_weather
 
-Password: postgres
+## Solución de problemas: El backend no puede conectarse a la BD
 
-Database: db_weather
+Si el backend falla al conectarse a la base de datos (por ejemplo, errores de conexión o tiempo de espera):
 
-Troubleshooting: Backend Can't Connect to DB
-If the backend fails to connect to the database (e.g., connection errors or timeout):
+1. Detén los contenedores:
 
-Stop the containers:
-
+```bash
 docker-compose down
-Delete the backend container explicitly:
+```
 
+2. Elimina explícitamente el contenedor backend:
+
+```bash
 docker rm backend
-Rebuild and restart all services:
+```
 
+3. Reconstruye y reinicia todos los servicios:
+
+```bash
 docker-compose up --build
-This ensures environment variables are correctly re-applied and connectivity is re-established.
+```
 
-Important Environment Variables
-Defined inside docker-compose.yml.
+Esto asegura que las variables de entorno se apliquen correctamente y que la conectividad se restablezca.
 
-Backend:
-env
+## Variables de entorno importantes
+
+Definidas dentro de `docker-compose.yml`.
+
+**Backend**:
+
+```
 POSTGRES_HOST=postgresDB
 POSTGRES_PORT=5432
 POSTGRES_USERNAME=postgres
@@ -63,160 +80,159 @@ POSTGRES_DATABASE=db_weather
 POSTGRES_SSL=false
 JWT_SECRET=awjdiao9jdsoiajwioa
 WEATHER_API_KEY=77cb5131b1d945aa8cf201322251205
+```
 
-Development Notes
-The backend runs using pnpm run start:debug.
+## Notas de desarrollo
 
-Volumes allow hot-reloading of local code changes without rebuilding the image.
+- El backend se ejecuta usando `pnpm run start:debug`.
+- Los volúmenes permiten la recarga en caliente de los cambios de código locales sin reconstruir la imagen.
 
-Project Structure
+## Estructura del proyecto
+
+```
 .
-├── backend/ # NestJS API
-├── frontend/ # React (Vite)
-├── postgres/ # Persistent volume for PostgreSQL
+├── backend/     # API NestJS
+├── frontend/    # React (Vite)
+├── postgres/    # Volumen persistente para PostgreSQL
 ├── docker-compose.yml
 └── README.md
+```
 
-Backend API Endpoints
-Base URL: /api/v1
+## Endpoints de la API Backend
 
-Authentication
-POST /auth/register
-Register a new user.
+Base URL: `/api/v1`
 
-Request body:
+### Autenticación
 
-json
-Copiar
-Editar
+#### `POST /auth/register`
+
+Registra un nuevo usuario.
+
+**Cuerpo de la solicitud**:
+
+```json
 {
-"username": "user123",
-"password": "securePassword"
+  "username": "user123",
+  "password": "securePassword"
 }
-Responses:
+```
 
-201 Created: User created successfully.
+**Respuestas**:
 
-400 Bad Request: Username already exists or invalid data.
+- **201 Created**: Usuario creado con éxito.
+- **400 Bad Request**: El nombre de usuario ya existe o datos inválidos.
 
-POST /auth/login
-Login an existing user and receive a JWT token.
+#### `POST /auth/login`
 
-Request body:
+Inicia sesión de un usuario existente y recibe un token JWT.
 
-json
-Copiar
-Editar
+**Cuerpo de la solicitud**:
+
+```json
 {
-"username": "user123",
-"password": "securePassword"
+  "username": "user123",
+  "password": "securePassword"
 }
-Responses:
+```
 
-200 OK: Login successful.
+**Respuestas**:
 
-json
-Copiar
-Editar
+- **200 OK**: Inicio de sesión exitoso.
+
+```json
 {
-"token": "<jwt_token>"
+  "token": "<jwt_token>"
 }
-401 Unauthorized: Invalid username or password.
+```
 
-Favorites (Authentication required)
-All favorites endpoints require the header:
-Authorization: Bearer <token>
+- **401 Unauthorized**: Nombre de usuario o contraseña no válidos.
 
-POST /favorites
-Create a new favorite for the authenticated user.
+### Favoritos (Requiere autenticación)
 
-Request body:
+Todos los endpoints de favoritos requieren el encabezado:
+`Authorization: Bearer <token>`
 
-json
-Copiar
-Editar
+#### `POST /favorites`
+
+Crea un nuevo favorito para el usuario autenticado.
+
+**Cuerpo de la solicitud**:
+
+```json
 {
-"city": "Madrid"
+  "city": "Madrid"
 }
-Responses:
+```
 
-201 Created: Favorite successfully created.
+**Respuestas**:
 
-400 Bad Request: Invalid data.
+- **201 Created**: Favorito creado con éxito.
+- **400 Bad Request**: Datos inválidos.
+- **409 Conflict**: El favorito ya existe.
+- **500 Internal Server Error**: Error interno del servidor.
 
-409 Conflict: Favorite already exists.
+#### `GET /favorites`
 
-500 Internal Server Error: Internal server error.
+Obtiene todas las ciudades favoritas del usuario autenticado.
 
-GET /favorites
-Get all favorite cities for the authenticated user.
+**Respuestas**:
 
-Responses:
+- **200 OK**: Devuelve una lista de favoritos.
 
-200 OK: Returns a list of favorites.
+```json
+[{ "city": "Madrid" }, { "city": "Paris" }]
+```
 
-json
-Copiar
-Editar
-[
-{ "city": "Madrid" },
-{ "city": "Paris" }
-]
-500 Internal Server Error: Internal server error.
+- **500 Internal Server Error**: Error interno del servidor.
 
-DELETE /favorites/:city
-Remove a favorite city from the authenticated user's list.
+#### `DELETE /favorites/:city`
 
-Parameters:
+Elimina una ciudad favorita de la lista del usuario autenticado.
 
-city (string): City name to remove.
+**Parámetros**:
 
-Responses:
+- `city` (string): Nombre de la ciudad a eliminar.
 
-200 OK: Favorite successfully removed.
+**Respuestas**:
 
-400 Bad Request: Invalid city name.
+- **200 OK**: Favorito eliminado con éxito.
+- **400 Bad Request**: Nombre de ciudad no válido.
+- **500 Internal Server Error**: Error interno del servidor.
 
-500 Internal Server Error: Internal server error.
+### Clima
 
-Weather
-GET /weather?city=<city>
-Get current weather data by city name.
+#### `GET /weather?city=<city>`
 
-Query parameters:
+Obtiene datos actuales del clima por nombre de ciudad.
 
-city (string, required): City name.
+**Parámetros de consulta**:
 
-Responses:
+- `city` (string, obligatorio): Nombre de la ciudad.
 
-200 OK: Current weather retrieved successfully.
+**Respuestas**:
 
-400 Bad Request: City query missing or invalid.
+- **200 OK**: Clima actual recuperado con éxito.
+- **400 Bad Request**: Consulta de ciudad faltante o no válida.
+- **500 Internal Server Error**: Error de la API del clima.
 
-500 Internal Server Error: Weather API error.
+#### `GET /weather/autocomplete?query=<query>`
 
-GET /weather/autocomplete?query=<query>
-Autocomplete city search.
+Autocompletado de búsqueda de ciudades.
 
-Query parameters:
+**Parámetros de consulta**:
 
-query (string, required): Text to autocomplete.
+- `query` (string, obligatorio): Texto para autocompletar.
 
-Responses:
+**Respuestas**:
 
-200 OK: Autocomplete results retrieved successfully.
+- **200 OK**: Resultados de autocompletado recuperados con éxito.
+- **400 Bad Request**: Parámetro de consulta faltante.
+- **500 Internal Server Error**: Error de la API del clima.
 
-400 Bad Request: Query parameter missing.
+## Cómo funciona la aplicación (estructura, decisiones, manejo de errores)
 
-500 Internal Server Error: Weather API error.
-
-How the app works (structure, decisions, error handling)
-Frontend built with React using Vite, handles authentication with JWT stored in localStorage.
-
-Backend built with NestJS, protects routes with JWT AuthGuard.
-
-Errors are handled gracefully with clear HTTP status codes and messages.
-
-Caching enabled on some endpoints (e.g., weather, favorites) for performance.
-
-Docker Compose manages backend, frontend, database, and pgAdmin services for easy local development and deployment.
+- Frontend construido con React usando Vite, maneja la autenticación con JWT almacenado en localStorage.
+- Backend construido con NestJS, protege rutas con JWT AuthGuard.
+- Los errores se manejan adecuadamente con códigos de estado HTTP claros y mensajes.
+- Caché habilitado en algunos endpoints (por ejemplo, clima, favoritos) para mejorar el rendimiento.
+- Docker Compose gestiona los servicios de backend, frontend, base de datos y pgAdmin para facilitar el desarrollo local y el despliegue.
