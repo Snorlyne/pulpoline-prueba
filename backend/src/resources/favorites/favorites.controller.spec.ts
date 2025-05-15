@@ -71,7 +71,7 @@ describe('FavoritesController', () => {
 
       const result = await controller.findAll({ user: mockUser });
       expect(result).toEqual(expected);
-      expect(mockFavoritesService.findAll).toHaveBeenCalledWith('testuser');
+      expect(mockFavoritesService.findAll).toHaveBeenCalledWith(mockUser);
     });
   });
 

@@ -59,6 +59,9 @@ export default function Table({ data, favoritesData }: TableProps) {
                 Climate
               </th>
               <th scope="col" className="px-6 py-3">
+                City
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Temperature
               </th>
               <th scope="col" className="px-6 py-3">
@@ -86,6 +89,7 @@ export default function Table({ data, favoritesData }: TableProps) {
                     <img src={item.current.condition.icon} alt="weather icon" />
                   </td>
                   <td className="px-6 py-4">{item.current.condition.text}</td>
+                  <td className="px-6 py-4">{item.location.name}</td>
                   <td className="px-6 py-4">
                     <div>
                       <p>{item.current.temp_c} °C</p>
@@ -173,7 +177,7 @@ export default function Table({ data, favoritesData }: TableProps) {
           ) : (
             <tbody>
               <tr className="bg-white dark:bg-gray-800 dark:border-gray-700 border-b">
-                <td colSpan={7} className="px-6 py-4 text-center">
+                <td colSpan={8} className="px-6 py-4 text-center">
                   No data
                 </td>
               </tr>

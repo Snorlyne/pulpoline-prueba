@@ -8,6 +8,7 @@ import { ToastAlertProvider } from "./providers/toastAlertProvider.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
+      
       <ToastAlertProvider>
         <App />
       </ToastAlertProvider>

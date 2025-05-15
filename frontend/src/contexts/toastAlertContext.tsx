@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { ToastAlertType } from "../types/toastAlert.types";
+import type { ToastAlertType } from "../types/toastAlert.type";
 
 
 interface ToastAlertContextProps {

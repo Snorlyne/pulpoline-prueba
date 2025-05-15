@@ -1,4 +1,4 @@
-import type { ToastAlertType } from "../types/toastAlert.types";
+import type { ToastAlertType } from "../types/toastAlert.type";
 
 interface ToastAlertProps {
   type: ToastAlertType;

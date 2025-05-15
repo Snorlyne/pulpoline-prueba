@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { type ReactNode, useState, useCallback } from "react";
 import ToastAlert from "../components/toastAlert";
 import { ToastAlertContext } from "../contexts/toastAlertContext";
-import type { ToastAlertType } from "../types/toastAlert.types";
+import type { ToastAlertType } from "../types/toastAlert.type";
 import {
   TOAST_DURATION_MILLIS,
   TOAST_IN_DURATION_MILLIS,

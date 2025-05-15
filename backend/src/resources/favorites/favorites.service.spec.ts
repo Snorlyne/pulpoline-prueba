@@ -76,7 +76,7 @@ describe('FavoritesService', () => {
       });
 
       expect(favoriteRepository.find).toHaveBeenCalledWith({
-        where: { user: { id: mockLoggedUser.id } },
+        where: { user: { id: mockLoggedUser.userId } },
       });
 
       expect(weatherService.findByCity).toHaveBeenCalledWith('Paris');
@@ -99,7 +99,7 @@ describe('FavoritesService', () => {
         statusCode: 201,
       });
       expect(result.statusCode).toBe(201);
-      expect(usersService.findOne).toHaveBeenCalledWith(mockLoggedUser.id);
+      expect(usersService.findOne).toHaveBeenCalledWith(mockLoggedUser.userId);
       expect(favoriteRepository.save).toHaveBeenCalledWith(createdFavorite);
     });
 
